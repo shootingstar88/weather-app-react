@@ -10,14 +10,15 @@ export async function cityWeather(req: Request, res: Response) {
                 key: '4f1acb3ad2f046be94742856231508',
                 q: city,
             },
+            
         });
         return res.status(200).json({
             data: response.data,
         });
-    } catch (error) {
-        return res.status(500).json({
+    } catch (error : any) {
+        return res.status(error.response.status).json({
             data: null,
-            error
+            error: error.response.data.error
         });
     }
 }
