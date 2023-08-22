@@ -9,10 +9,6 @@ const router = createBrowserRouter([
     element: <Weather />,
   },
   {
-    path: "/weather",
-    element: <Weather />,
-  },
-  {
     path: "/search",
     element: <Search />,
   },
