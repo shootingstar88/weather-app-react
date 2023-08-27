@@ -14,5 +14,5 @@ app.use('/', indexRouter);
 app.use('/api', apiRouter);
 
 app.listen(port, () => {
-    console.log(`app listening on http://localhost:${port}`)
+    console.log(`app listening on http://localhost:${port}/health`)
 });

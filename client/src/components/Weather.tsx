@@ -16,15 +16,16 @@ interface weatherInfo {
 
 function Weather() {
   const [weather, setWeather] = useState<weatherInfo>();
+  const [url, setUrl] = useState<string>();
 
   const state = useLocation().state;
   console.log(state);
-  let url: string | null = null;
-  if(state && state.url) {
-    url = state.url;
+  if (state && state.url) {
+    if(url!=state.url)
+      setUrl(state.url);
   }
 
-  const fetchWeather = async (url: string = 'Thoothukudi') => {
+  const fetchWeather = async (url: string = "Thoothukudi") => {
     try {
       const response = await axios.get(`/weather/${url}`, {
         baseURL: "http://localhost:3000/api",
@@ -38,13 +39,20 @@ function Weather() {
     }
   };
 
+  const setBackgroundImage = () => {
+    const id = Math.ceil((Math.random() * 300));
+    const imgaeUrl = `https://picsum.photos/id/${id}/400/600`;
+    const value = `linear-gradient(to top, rgb(79, 92, 211, 0.7) , rgb(131, 197, 206, 0.7)), url(${imgaeUrl})`;
+    return value;
+  }
+
   useEffect(() => {
-    url? fetchWeather(url) : fetchWeather();
+    url ? fetchWeather(url) : fetchWeather();
   }, [url]);
 
   return (
     <div className="w-full h-screen bg-oxford-blue p-6 text-white flex justify-center items-center tracking-wide">
-      <div className="w-1/5 bg-image rounded-2xl h-[400px] px-5 py-5">
+      <div className="w-1/5 rounded-2xl h-[400px] px-5 py-5" style={{backgroundImage: setBackgroundImage()}}>
         <p className="font-bold text-2xl pb-0.5">{weather?.day}</p>
         <p className="text-sm mb-2">{weather?.date}</p>
         <div className="flex mb-32">
