@@ -19,6 +19,8 @@ export async function cityWeather(req: Request, res: Response) {
 
         if(apiData) {
             const weatherDate = date.parse(apiData.location.localtime.split(' ')[0], 'YYYY-MM-DD');
+            const iconUrl = apiData.current.condition.icon.split('/');
+            const iconPath = '/'+iconUrl[iconUrl.length-2]+'/'+iconUrl[iconUrl.length-1];
             data = {
                 date: date.format(weatherDate, 'DD MMM YYYY'),
                 day: date.format(weatherDate, 'dddd'),
@@ -26,6 +28,7 @@ export async function cityWeather(req: Request, res: Response) {
                 country: apiData.location.country,
                 temperature: apiData.current.temp_c,
                 condition: apiData.current.condition.text,
+                icon: iconPath,
                 precipitation: apiData.current.precip_mm,
                 humidity: apiData.current.humidity,
                 wind: apiData.current.wind_kph,
@@ -39,7 +42,7 @@ export async function cityWeather(req: Request, res: Response) {
         console.log(error);
         return res.status(400).json({
             data: null,
-            error: error.response.data.error? error.response.data.error : error,
+            error: error.response.data && error.response.data.error? error.response.data.error : error,
         });
     }
 }

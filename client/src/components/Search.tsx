@@ -1,20 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface searchDetails {
-  name: string,
-  country: string,
-  url: string,
-  id: number,
-  lat: number,
-  lon: number,
-  region: string,
+  name: string;
+  country: string;
+  url: string;
+  id: number;
+  lat: number;
+  lon: number;
+  region: string;
 }
 
 function search() {
   const [cities, setCities] = useState<searchDetails[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
+  const navigate = useNavigate();
 
   const fetchCities = async () => {
     try {
@@ -40,6 +41,19 @@ function search() {
     return cities[key].url;
   };
 
+  const handleKeyPress = (e: any) => {
+    // if user press enter
+    if (e.which === 13) {
+      fetchCities();
+    }
+  };
+
+  useEffect(() => {
+    if (searchInput.length >= 2) {
+      fetchCities();
+    }
+  }, [searchInput]);
+
   return (
     <div className="flex justify-center items-center h-screen bg-oxford-blue">
       <div
@@ -51,31 +65,40 @@ function search() {
             <span className="material-symbols-outlined px-1 transition duration-150 ease-in-out hover:scale-110">
               search
             </span>
-            <form action="post" autoComplete="off" className="flex-1 flex px-1">
+            <div className="flex-1 flex px-1">
               <input
                 type="text"
                 name="city"
                 id="city"
+                autoFocus
+                autoComplete="off"
+                onKeyUp={handleKeyPress}
                 className="bg-secondary-gray flex-1 autofill:bg-secondary-gray! outline-none"
                 onChange={(e) => setSearchValue(e)}
                 value={searchInput}
               />
-            </form>
+            </div>
           </div>
           <button
             className="bg-blue rounded-lg px-6 py-2 mx-4 block transition duration-150 ease-in-out hover:scale-110"
+            type="submit"
             onClick={fetchCities}
           >
             Search
           </button>
-          <Link
-            to=".."
+          <button
+            onClick={() => navigate(-1)}
             className="material-symbols-outlined py-3 cursor-pointer"
           >
             close
-          </Link>
+          </button>
         </div>
         <div>
+          {cities.length === 0 && (
+            <p className="px-4 py-2 rounded-lg text-lg w-full block">
+              Loading...
+            </p>
+          )}
           {cities.map((value, key) => {
             return (
               <Link
